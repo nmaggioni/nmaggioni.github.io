@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Dumpster WebUI</title><link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css"><link rel="stylesheet" href="components/bootstrap-fileinput/css/fileinput.min.css"><link rel="stylesheet" href="css/style.css"><script src="components/jquery/dist/jquery.min.js"></script><script src="components/bootstrap/dist/js/bootstrap.min.js"></script><script src="components/bootstrap-fileinput/js/fileinput.min.js"></script><script src="components/superplaceholder/dist/superplaceholder.min.js"></script></head><body><header id="top" class="header"><div class="header-overlay text-vertical-center"><a href="https://github.com/nmaggioni/Dumpster"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a><h1 id="mTitle">Dumpster</h1><h3 id="mSubtitle">A lightweight, self-hosted and API-based file upload server supporting YubiKey OTP authentication.</h3><br><div id="alert-div" class="col-md-6 col-md-offset-3"><div id="token-div"><input id="token" type="text" placeholder="YubiKey Token" class="form-control"></div><div id="upload-div"><input id="upload" name="file" type="file" class="file-loading"></div></div><script>
+$(document).on('ready', function() {
+  alert('GitHub pages does not support POST requests, this demo will return an error!');
+
+  $("#upload").fileinput({
+    'maxFileCount': 1,
+    'uploadUrl': window.location.href + 'fake_answer.html'
+  });
+  $('#upload')
+    .fileinput('refresh', { 'dropZoneEnabled': false })
+    .fileinput('disable');
+
+  $('#upload').on('fileuploaded', function(event, data, previewId, index) {
+    var response = data.response;
+    $('#alert-div').html(createAlert(response.downloadUrl));
+  });
+
+  $('#token').on('input', function() {
+    if($('#token').val().length > 0) {
+      $('#upload')
+        .fileinput('refresh', {
+          'dropZoneEnabled': true,
+          })
+        .fileinput('enable');
+    } else {
+      $('#upload')
+        .fileinput('clear')
+        .fileinput('refresh', { 'dropZoneEnabled': false })
+        .fileinput('disable');
+    }
+  });
+
+  superplaceholder({
+    el: document.querySelector('input[id=token]'),
+    sentences: [ 'Insert your YubiKey and press its golden button' ],
+    options: {
+      letterDelay: 75,
+      sentenceDelay: 3000,
+      startOnFocus: true,
+      loop: true,
+      showCursor: true,
+      cursor: '|'
+    }
+  });
+
+  function createAlert(url) {
+    var notif = '<div class="alert alert-success alert-dismissable> <i class="fa fa-check-square"></i>' +
+      '<strong>Success! Here\'s your download link.</strong>' +
+      '<hr class="message-inner-separator">' +
+        '<a href="#">' + url + '</a>' +
+      '</div>';
+
+    return notif;
+  }
+});</script></div></header></body></html>
